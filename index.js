@@ -42,17 +42,17 @@ clearBtn.addEventListener("click", () => {
 //Progress bar 100% ga to‘lganda tugma ishlamay qoladi.
 
 const startBtn = document.getElementById("start-btn");
-const progressBar = document.getElementById("progress-bar");
+const progress = document.getElementById("progress");
 
-let progress = 0;
+let num = 0;
 
 startBtn.addEventListener("click", () => {
   startBtn.disabled = true;
 
   const interval = setInterval(() => {
-    progress += 5;
-    progressBar.style.width = progress + "%";
-    if (progress >= 100) {
+    num += 5;
+    progress.style.width = num + "%";
+    if (num >= 100) {
       clearInterval(interval);
     }
   }, 100);
