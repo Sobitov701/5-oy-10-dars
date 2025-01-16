@@ -42,3 +42,22 @@ textarea {
   border-radius: 5px;
   transition: width 0.1s ease;
 }
+
+#form {
+  width: 900px;
+  margin: 0 auto;
+}
+
+#table {
+  border: 1px solid black;
+  border-collapse: collapse;
+  width: 90%;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+th,
+td {
+  border: 1px solid black;
+  padding: 5px;
+}

@@ -1,3 +1,63 @@
+const form = document.getElementById("form");
+const name = document.getElementById("name");
+const price = document.getElementById("price");
+const count = document.getElementById("count");
+const btn = document.getElementById("btn");
+const table = document.querySelector("#table");
+const tbody = document.getElementById("tbody");
+
+function validate() {
+  return true;
+}
+
+function getDate() {
+  let products = [];
+  if (localStorage.getItem("products")) {
+    products = JSON.parse(localStorage.getItem("product"));
+  }
+
+  return products;
+}
+
+function createRow(product) {
+  return `
+  <tr>
+          <td>1</td>
+          <td>${product.name}</td>
+          <td>${product.price}</td>
+          <td>${product.count}</td>
+          <td>
+            <button>save</button>
+            <button>edit</button>
+          </td>
+        </tr>
+  `;
+}
+
+btn &&
+  btn.addEventListener("click", function (event) {
+    event.preventDefault();
+    const isValid = validate();
+    if (!isValid) {
+      return;
+    }
+
+    const product = {
+      id: Date.now(),
+      name: name.value,
+      price: price.value,
+      count: count.value,
+    };
+
+    let products = getDate();
+    // products.push(product);
+    localStorage.setItem("products", JSON.stringify(products));
+    form.reset();
+
+    let row = createRow(product);
+    tbody.innerHTML += row;
+  });
+
 //1-misol
 //Bir tugma (Generate Emoji) va bo‘sh bir <div> yarating.
 //Tugma bosilganda, tasodifiy emojilar ro‘yxatidan bir emoji tanlab, <div> elementga ko‘rsating.
