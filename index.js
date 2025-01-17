@@ -50,7 +50,6 @@ btn &&
     };
 
     let products = getDate();
-    // products.push(product);
     localStorage.setItem("products", JSON.stringify(products));
     form.reset();
 
@@ -104,19 +103,3 @@ clearBtn &&
 //Bir tugma (Start) va bir progress bar (<div> elementi ichida progressni ko‘rsatuvchi boshqa <div> elementi) yarating.
 //Tugmani bosganda progress bar sekin-asta to‘ladi (masalan, har 100ms 5% ga o‘sib boradi).
 //Progress bar 100% ga to‘lganda tugma ishlamay qoladi.
-
-const start = document.getElementById("start-btn");
-const progress = document.getElementById("progress");
-
-let num = 0;
-
-start &&
-  start.addEventListener("click", () => {
-    const interval = setInterval(() => {
-      num += 5;
-      progress.style.width = num + "%";
-      if (num >= 100) {
-        clearInterval(interval);
-      }
-    }, 100);
-  });
