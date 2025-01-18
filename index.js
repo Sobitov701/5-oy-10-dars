@@ -3,32 +3,38 @@ const name = document.getElementById("name");
 const price = document.getElementById("price");
 const count = document.getElementById("count");
 const btn = document.getElementById("btn");
-const table = document.querySelector("#table");
 const tbody = document.getElementById("tbody");
+const overalPrice = document.getElementById("overalPrice");
+const overalCount = document.getElementById("overalCount");
 
 function validate() {
+  if (!name.value.trim() || !price.value.trim() || !count.value.trim()) {
+    alert("Iltimos, barcha maydonlarni to'ldiring!");
+    return false;
+  }
   return true;
 }
 
 function getDate() {
-  let products = [];
-  if (localStorage.getItem("products")) {
-    products = JSON.parse(localStorage.getItem("product"));
+  try {
+    const products = JSON.parse(localStorage.getItem("products")) || [];
+    return Array.isArray(products) ? products : [];
+  } catch (error) {
+    console.error("LocalStorage ma'lumotini o'qishda xatolik:", error);
+    return [];
   }
-
-  return products;
 }
 
-function createRow(product) {
+function createRow(product, index) {
   return `
   <tr>
-          <td>1</td>
+          <td>${index}</td>
           <td>${product.name}</td>
           <td>${product.price}</td>
           <td>${product.count}</td>
           <td>
-            <button>save</button>
-            <button>edit</button>
+            <button data-id="${product.id}" class="delete">Delete</button>
+            <button data-id="${product.id}" class="edit">Edit</button>
           </td>
         </tr>
   `;
@@ -50,12 +56,95 @@ btn &&
     };
 
     let products = getDate();
+    products.push(product);
     localStorage.setItem("products", JSON.stringify(products));
     form.reset();
 
-    let row = createRow(product);
+    let index = tbody.children.length + 1;
+    let row = createRow(product, index);
     tbody.innerHTML += row;
+
+    let oldSumPrice = +overalPrice.innerHTML;
+    let oldSumCount = +overalCount.innerHTML;
+
+    overalCount.innerHTML = oldSumCount + +product.count;
+    overalPrice.innerHTML = oldSumPrice + +product.price;
   });
+
+document.addEventListener("DOMContentLoaded", function () {
+  let products = getDate();
+  let sum = 0;
+  let counter = 0;
+
+  products.length > 0 &&
+    products.forEach((product, index) => {
+      let row = createRow(product, index + 1);
+      tbody.innerHTML += row;
+      sum += Number(product.price);
+      counter += Number(product.count);
+    });
+
+  overalCount.innerHTML = counter;
+  overalPrice.innerHTML = sum;
+
+  const deleteButtons = document.querySelectorAll("button.delete");
+  deleteButtons.length > 0 &&
+    deleteButtons.forEach((deleteButton) => {
+      deleteButton &&
+        deleteButton.addEventListener("click", function () {
+          let confirmDelete = confirm("rostanxa ochirmoqchimisiz");
+          let elementId = this.getAttribute("data-id");
+
+          if (confirmDelete && elementId) {
+            let products = getDate();
+            products = products.filter((product) => {
+              return product.id != elementId;
+            });
+
+            localStorage.setItem("products", JSON.stringify(products));
+
+            this.parentNode.parentNode.remove();
+            window.location.reload();
+          }
+        });
+    });
+
+  const editButtons = document.querySelectorAll("button.edit");
+  editButtons.length > 0 &&
+    editButtons.forEach((editButton) => {
+      editButton &&
+        editButton.addEventListener("click", function () {
+          let elementId = this.getAttribute("data-id");
+          let products = getDate();
+
+          let oldValue = products.find((product) => {
+            return product.id == elementId;
+          });
+
+          let name = prompt("nomi", oldValue.name);
+          let price = +prompt("narxi", oldValue.price);
+          let count = +prompt("soni", oldValue.count);
+
+          let product = {
+            id: elementId,
+            name: name,
+            price: price,
+            count: count,
+          };
+
+          products = products.map((value) => {
+            if (value.id == elementId) {
+              value = product;
+            }
+
+            return value;
+          });
+
+          localStorage.setItem("products", JSON.stringify(products));
+          window.location.reload();
+        });
+    });
+});
 
 //1-misol
 //Bir tugma (Generate Emoji) va bo‘sh bir <div> yarating.
